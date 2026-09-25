@@ -1,4 +1,6 @@
 import streamlit as st
+import numpy as np
+import plotly.express as px
 
 st.title("Analysis of ENA Innovation Projects")
 st.write("This analysis provides insight into previous and current Innovation Projects funded by Ofgem.\
