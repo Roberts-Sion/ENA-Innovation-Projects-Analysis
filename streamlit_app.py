@@ -2,7 +2,7 @@ import streamlit as st
 import numpy as np
 import plotly.express as px
 
-st.title("Analysis of ENA Innovation Projects")
+st.title("Analysis of Ofgem Innovation Projects")
 st.write("This analysis provides insight into previous and current Innovation Projects funded by Ofgem.\
          Data regarding these projects, accessed using Energy Networks Association's Smarter Networks Portal,\
          is accessible through a series of different visual and graphical means, and adjustable to the users demand.\
