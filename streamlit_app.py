@@ -53,7 +53,7 @@ technology_types =['Active Network Management', 'Asset Management', 'Biomethane'
                    
 technology_types_idx = [technology[technology.str.contains(tt, na=False)].index.tolist() for tt in technology_types]
 
-st.subheader("Plot of Total Budget of Sector vs Sector (use as test)")
+st.subheader("Plot of Total Project Budgets vs Sector (use as test)")
 total_sector_budget = np.zeros(len(sector_types))
 for i in range(len(sector_types)):
   for j in range(len(sector_types_idx[i])):
@@ -61,5 +61,13 @@ for i in range(len(sector_types)):
 
 fig = px.bar(x=sector_types, y=total_sector_budget, labels={'x':'Sector', 'y':'Total Funding (£)'})
 st.write(fig)
+
+st.subheader("Plot of Total Project Budgets vs Technology (use as test)")
+total_technology_budget = np.zeros(len(technology_types))
+for i in range(len(technology_types)):
+  for j in range(len(technology_types_idx[i])):
+    total_technology_budget[i] += budget[technology_types_idx[i][j]]
+fig1 = px.bar(x=technology_types, y=total_technology_budget, labels={'x':'Technology', 'y':'Total Funding (£)'})
+st.write(fig1)
 
 st.write("Last updated 29/09/2026")
