@@ -61,11 +61,25 @@ bts_total_sector_budget = total_sector_budget[bts_total_sector_budget_idx]
 bts_sector_types = np.array(sector_types)[bts_total_sector_budget_idx]
 fig = px.bar(x=bts_sector_types, y=bts_total_sector_budget, labels={'x':'Sector', 'y':'Total Funding (£)'})
 st.write(fig)
-ED_data = pd.DataFrame({"Project Title": [titles[i] for i in sector_types_idx],\
-                        "Technology Area": [technology[i] for i in sector_types_idx],\
-                        "Project Budget": [budget[i] for i in sector_types_idx],\
-                        "Funding Mechanism": [funding_mechanism[i] for i in sector_types_idx]})
-st.table(ED_data)
+sector_names = ["Electricity Distribution", "Electricity Transmission", "Gas Distribution", "Gas Transmission"]
+sector_indices = {"Electricity Distribution": sector_types_idx[0], "Electricity Transmission": sector_types_idx[1],\
+                  "Gas Distribution": sector_types_idx[2], "Gas Transmission": sector_types_idx[3]}
+tables = {}
+for sector in sector_names:
+  indices = sector_indices[sector]
+  tables[sector] = pd.DataFrame({"Project Title": titles.iloc[indices].value,\
+                                 "Technology Areas": technology.iloc[indices].value,\
+                                 "Project Budget": budget.iloc[indices].value,\
+                                 "Funding Mechanism": funding_mechanism.iloc[indices].value})
+if "selected_sector" not in st.session_state:
+  st.session_state.selected_sector = None
+for sector in sector_names:
+  if st.button(f"Show Table ({sector})", key=f"button_{sector}"):
+    st.session_state.selected_sector = sector
+if st.session_state.selected_sector is not None:
+  selected_sector = st.session_state.selected_sector
+  st.subheader(selected_sector)
+  st.dataframe(tables[selected_sector], use_container_width=True, hide_index=True)
 
 st.subheader("Plot of Total Project Budgets vs Owner (use as test)")
 total_owner_budget = np.zeros(len(owner_types))
@@ -76,7 +90,7 @@ bts_total_owner_budget_idx = np.argsort(total_owner_budget)[::-1]
 bts_total_owner_budget = total_owner_budget[bts_total_owner_budget_idx]
 bts_owner_types = np.array(owner_types)[bts_total_owner_budget_idx]
 fig1 = px.bar(x=bts_owner_types, y=bts_total_owner_budget, labels={'x':'Owner', 'y':'Total Funding (£)'})
-fig1.show()
+st.write(fig1)
 
 st.subheader("Plot of Total Project Budgets vs Technology (use as test)")
 total_technology_budget = np.zeros(len(technology_types))
