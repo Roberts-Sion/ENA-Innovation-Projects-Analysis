@@ -65,17 +65,17 @@ sector_names = ["Electricity Distribution", "Electricity Transmission", "Gas Dis
 sector_indices = {"Electricity Distribution": sector_types_idx[0], "Electricity Transmission": sector_types_idx[1],\
                   "Gas Distribution": sector_types_idx[2], "Gas Transmission": sector_types_idx[3]}
 tables = {}
-for sector in sector_names:
-  indices = sector_indices[sector]
-  tables[sector] = pd.DataFrame({"Project Title": titles.iloc[indices].values,\
+for sect in sector_names:
+  indices = sector_indices[sect]
+  tables[sect] = pd.DataFrame({"Project Title": titles.iloc[indices].values,\
                                  "Technology Areas": technology.iloc[indices].values,\
                                  "Project Budget": budget.iloc[indices].values,\
                                  "Funding Mechanism": funding_mechanism.iloc[indices].values})
 if "selected_sector" not in st.session_state:
   st.session_state.selected_sector = None
-for sector in sector_names:
-  if st.button(f"Show Table ({sector})", key=f"button_{sector}"):
-    st.session_state.selected_sector = sector
+for sect in sector_names:
+  if st.button(f"Show Table ({sect})", key=f"button_{sect}"):
+    st.session_state.selected_sector = sect
 if st.session_state.selected_sector is not None:
   selected_sector = st.session_state.selected_sector
   st.subheader(selected_sector)
@@ -101,6 +101,8 @@ bts_total_technology_budget_idx = np.argsort(total_technology_budget)[::-1]
 bts_total_technology_budget = total_technology_budget[bts_total_technology_budget_idx]
 bts_technology_types = np.array(technology_types)[bts_total_technology_budget_idx]
 fig2 = px.bar(x=bts_technology_types, y=bts_total_technology_budget, labels={'x':'Technology', 'y':'Total Funding (£)'})
+fig2.update_layout(width=1400, height=800)
+fig2.update_xaxes(tickmode='linear', dtick=75, tickangle=20, tickfont=dict(size=8))
 st.write(fig2)
 
 st.subheader('(Other test plot)')
