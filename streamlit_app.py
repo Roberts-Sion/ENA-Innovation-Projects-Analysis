@@ -112,4 +112,4 @@ fig2.update_layout(updatemenus=[dict(buttons=buttons, direction='down', showacti
                   xaxis_title='Date (DD-MM-YY)', yaxis_title='Number of Projects', title='Cumulative Number of Projects', hovermode='x unified')
 st.plotly_chart(fig2, use_container_width=True)
 
-st.write("Last updated 29/09/2026")
+st.write("Last updated 30/09/2026")
