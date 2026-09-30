@@ -83,30 +83,30 @@ while end == 0:
   else:  
     total_cumul.append(remove)
 sector_cumul = {}
-for st in sector_types:
-  sector_idx = sector[sector.str.contains(st, na=False)].index
+for sc in sector_types:
+  sector_idx = sector[sector.str.contains(sc, na=False)].index
   sector_dates = start_dt.loc[sector_idx]
-  sector_cumul[st] = [np.sum(sector_dates.values <= date) for date in start_dt_sort]
+  sector_cumul[sc] = [np.sum(sector_dates.values <= date) for date in start_dt_sort]
   end = 0
   while end == 0:
-    remove = sector_cumul[st].pop()
+    remove = sector_cumul[sc].pop()
     end = remove
     if end == 0:
       continue
     else:  
-      sector_cumul[st].append(remove)
+      sector_cumul[sc].append(remove)
 
 fig2 = go.Figure()
 fig2.add_trace(go.Scatter(x=start_dt_sort, y=total_cumul, mode='lines+markers', name='Total'))
-for st in sector_types:
-  fig2.add_trace(go.Scatter(x=start_dt_sort, y=sector_cumul[st], mode='lines+markers', name=st, visible=False))
+for sc in sector_types:
+  fig2.add_trace(go.Scatter(x=start_dt_sort, y=sector_cumul[sc], mode='lines+markers', name=sc, visible=False))
 
 buttons = []
 buttons.append(dict(label='Total', method='update', args=[{'visible': [True] + [False]*len(sector_types)}, {'title': 'Cumulative Number of All Projects'}]))
-for i, st in enumerate(sector_types):
+for i, sc in enumerate(sector_types):
   visible = [False] * (len(sector_types) + 1)
   visible[i+1] = True
-  buttons.append(dict(label=st, method='update', args=[{'visible': visible}, {'title': f'Cumulative Number of {st} Projects'}]))
+  buttons.append(dict(label=sc, method='update', args=[{'visible': visible}, {'title': f'Cumulative Number of {sc} Projects'}]))
 
 fig2.update_layout(updatemenus=[dict(buttons=buttons, direction='down', showactive=True, x=0, xanchor='left', y=1.12, yanchor='top')],\
                   xaxis_title='Date (DD-MM-YY)', yaxis_title='Number of Projects', title='Cumulative Number of Projects', hovermode='x unified')
