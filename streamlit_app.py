@@ -67,10 +67,10 @@ sector_indices = {"Electricity Distribution": sector_types_idx[0], "Electricity 
 tables = {}
 for sector in sector_names:
   indices = sector_indices[sector]
-  tables[sector] = pd.DataFrame({"Project Title": titles.iloc[indices].value,\
-                                 "Technology Areas": technology.iloc[indices].value,\
-                                 "Project Budget": budget.iloc[indices].value,\
-                                 "Funding Mechanism": funding_mechanism.iloc[indices].value})
+  tables[sector] = pd.DataFrame({"Project Title": titles.iloc[indices].values,\
+                                 "Technology Areas": technology.iloc[indices].values,\
+                                 "Project Budget": budget.iloc[indices].values,\
+                                 "Funding Mechanism": funding_mechanism.iloc[indices].values})
 if "selected_sector" not in st.session_state:
   st.session_state.selected_sector = None
 for sector in sector_names:
