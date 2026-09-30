@@ -23,6 +23,7 @@ owners = data['Owner Network']
 collaborators = data['Collaborating Networks']
 funding_mechanism = data['Funding Mechanism']
 #Area of research
+titles = data['Project Title']
 strategy = data['Strategy Theme']
 research = data['Research Areas']
 technology = data['Technology Areas']
@@ -40,18 +41,14 @@ sector_types = sector.unique()
 sector_types = sector_types[:4]
 sector_types_idx = [sector[sector.str.contains(st, na=False)].index.tolist() for st in sector_types]
 
+#Do the same for owners as well
+owner_types = owners.unique()
+owner_types = [ot for ot in owner_types if pd.notna(ot)]
+owner_types_idx = [owners[owners.str.contains(ot, na=False)].index.tolist() for ot in owner_types]
+
 #Do the same for technology as well
-technology_types =['Active Network Management', 'Asset Management', 'Biomethane', 'Carbon Emission Reduction Technologies',\
-                   'Commercial', 'Comms and IT', 'Community Schemes', 'Condition Monitoring', 'Conductors', 'Control Systems',\
-                   'Cyber Security', 'Demand Response', 'Demand Side Management', 'Digital Network', 'Distributed Generation',\
-                   'Electric Vehicles', 'Electricity Transmission Networks', 'Energy Storage', 'Energy Storage and Demand Response',\
-                   'Environmental', 'Fault Current', 'Fault Level', 'Fault Management', 'Gas Distribution Networks',\
-                   'Gas Transmission Networks', 'Gas Vehicles', 'Green Gas', 'HVDC', 'Harmonics', 'Health and Safety', 'Heat Pumps',\
-                   'High Voltage Technology', 'Hydrogen', 'LV & 11kV Networks', 'Low Carbon Generation', 'Maintenance & Inspections',\
-                   'Measurement', 'Meshed Networks', 'Modelling', 'Network Automation', 'Network Monitoring', 'Offshore Transmission',\
-                   'Overhead Lines', 'Photovoltaics', 'Poverty', 'Pre-Heat', 'Protection', 'Resilience', 'Stakeholder Engagement',\
-                   'Storage', 'Substation Monitoring', 'Substations', 'System Security', 'Transformers', 'Voltage Control']
-                   
+technology_types = technology.unique()
+technology_types = [tt for tt in technology_types if pd.notna(tt)]
 technology_types_idx = [technology[technology.str.contains(tt, na=False)].index.tolist() for tt in technology_types]
 
 st.subheader("Plot of Total Project Budgets vs Sector (use as test)")
@@ -59,17 +56,38 @@ total_sector_budget = np.zeros(len(sector_types))
 for i in range(len(sector_types)):
   for j in range(len(sector_types_idx[i])):
     total_sector_budget[i] += budget[sector_types_idx[i][j]]
-
-fig = px.bar(x=sector_types, y=total_sector_budget, labels={'x':'Sector', 'y':'Total Funding (£)'})
+bts_total_sector_budget_idx = np.argsort(total_sector_budget)[::-1]
+bts_total_sector_budget = total_sector_budget[bts_total_sector_budget_idx]
+bts_sector_types = np.array(sector_types)[bts_total_sector_budget_idx]
+fig = px.bar(x=bts_sector_types, y=bts_total_sector_budget, labels={'x':'Sector', 'y':'Total Funding (£)'})
 st.write(fig)
+ED_data = pd.DataFrame({"Project Title": [titles[i] for i in sector_types_idx],\
+                        "Technology Area": [technology[i] for i in sector_types_idx],\
+                        "Project Budget": [budget[i] for i in sector_types_idx],\
+                        "Funding Mechanism": [funding_mechanism[i] for i in sector_types_idx]})
+st.table(ED_data)
+
+st.subheader("Plot of Total Project Budgets vs Owner (use as test)")
+total_owner_budget = np.zeros(len(owner_types))
+for i in range(len(owner_types)):
+  for j in range(len(owner_types_idx[i])):
+    total_owner_budget[i] += budget[owner_types_idx[i][j]]
+bts_total_owner_budget_idx = np.argsort(total_owner_budget)[::-1]
+bts_total_owner_budget = total_owner_budget[bts_total_owner_budget_idx]
+bts_owner_types = np.array(owner_types)[bts_total_owner_budget_idx]
+fig1 = px.bar(x=bts_owner_types, y=bts_total_owner_budget, labels={'x':'Owner', 'y':'Total Funding (£)'})
+fig1.show()
 
 st.subheader("Plot of Total Project Budgets vs Technology (use as test)")
 total_technology_budget = np.zeros(len(technology_types))
 for i in range(len(technology_types)):
   for j in range(len(technology_types_idx[i])):
     total_technology_budget[i] += budget[technology_types_idx[i][j]]
-fig1 = px.bar(x=technology_types, y=total_technology_budget, labels={'x':'Technology', 'y':'Total Funding (£)'})
-st.write(fig1)
+bts_total_technology_budget_idx = np.argsort(total_technology_budget)[::-1]
+bts_total_technology_budget = total_technology_budget[bts_total_technology_budget_idx]
+bts_technology_types = np.array(technology_types)[bts_total_technology_budget_idx]
+fig2 = px.bar(x=bts_technology_types, y=bts_total_technology_budget, labels={'x':'Technology', 'y':'Total Funding (£)'})
+st.write(fig2)
 
 st.subheader('(Other test plot)')
 start_dt_sort = np.sort(start_dt)
@@ -96,10 +114,10 @@ for sc in sector_types:
     else:  
       sector_cumul[sc].append(remove)
 
-fig2 = go.Figure()
-fig2.add_trace(go.Scatter(x=start_dt_sort, y=total_cumul, mode='lines+markers', name='Total'))
+fig3 = go.Figure()
+fig3.add_trace(go.Scatter(x=start_dt_sort, y=total_cumul, mode='lines+markers', name='Total'))
 for sc in sector_types:
-  fig2.add_trace(go.Scatter(x=start_dt_sort, y=sector_cumul[sc], mode='lines+markers', name=sc, visible=False))
+  fig3.add_trace(go.Scatter(x=start_dt_sort, y=sector_cumul[sc], mode='lines+markers', name=sc, visible=False))
 
 buttons = []
 buttons.append(dict(label='Total', method='update', args=[{'visible': [True] + [False]*len(sector_types)}, {'title': 'Cumulative Number of All Projects'}]))
@@ -108,8 +126,8 @@ for i, sc in enumerate(sector_types):
   visible[i+1] = True
   buttons.append(dict(label=sc, method='update', args=[{'visible': visible}, {'title': f'Cumulative Number of {sc} Projects'}]))
 
-fig2.update_layout(updatemenus=[dict(buttons=buttons, direction='down', showactive=True, x=0, xanchor='left', y=1.12, yanchor='top')],\
+fig3.update_layout(updatemenus=[dict(buttons=buttons, direction='down', showactive=True, x=0, xanchor='left', y=1.12, yanchor='top')],\
                   xaxis_title='Date (DD-MM-YY)', yaxis_title='Number of Projects', title='Cumulative Number of Projects', hovermode='x unified')
-st.plotly_chart(fig2, use_container_width=True)
+st.plotly_chart(fig3, use_container_width=True)
 
 st.write("Last updated 30/09/2026")
