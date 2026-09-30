@@ -101,7 +101,7 @@ bts_total_technology_budget_idx = np.argsort(total_technology_budget)[::-1]
 bts_total_technology_budget = total_technology_budget[bts_total_technology_budget_idx]
 bts_technology_types = np.array(technology_types)[bts_total_technology_budget_idx]
 fig2 = px.bar(x=bts_technology_types, y=bts_total_technology_budget, labels={'x':'Technology', 'y':'Total Funding (£)'})
-fig2.update_layout(width=2500, height=800)
+fig2.update_layout(width=1400, height=2000)
 fig2.update_xaxes(tickmode='linear', dtick=75, tickangle=20, tickfont=dict(size=8))
 st.write(fig2)
 
