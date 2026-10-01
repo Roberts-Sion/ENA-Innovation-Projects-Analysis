@@ -74,19 +74,15 @@ for sect in sector_names:
 if "selected_sector" not in st.session_state:
   st.session_state.selected_sector = None
 for sect in sector_names:
-  if st.session_state.selected_sector == sect:
-    button_text = f"Show Table ({sect})"
-  else:
-    button_text = f"Hide Table ({sect})"
-  if st.button(button_text, key=f"button_{sect}"):
-    if st.session_state.selected_sector == sect:
-      st.session_state.selected_sector = None
-    else:
-      st.session_state.selected_sector = sect
+  if st.button(f"Show Table ({sect})", key=f"button_{sect}"):
+    st.session_state.selected_sector = sect
 if st.session_state.selected_sector is not None:
   selected_sector = st.session_state.selected_sector
   st.subheader(selected_sector)
   st.dataframe(tables[selected_sector], use_container_width=True, hide_index=True)
+  if st.button("Hide Table", key="hide_table"):
+    st.session_state.selected_sector = None
+    st.rerun()
 
 st.subheader("Plot of Total Project Budgets vs Owner (use as test)")
 total_owner_budget = np.zeros(len(owner_types))
