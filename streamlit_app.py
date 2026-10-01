@@ -110,8 +110,9 @@ bts_tech_4_sect_type = []
 bts_technology_types = []
 for i in range(len(sector_types)):
   counts = tech_4_sect_type[i].sort_values(ascending=False)
-  bts_technology_types.append(counts.index)
-  bts_tech_4_sect_type.append(counts)
+  non_zero_counts = counts[counts > 0]
+  bts_technology_types.append(non_zero_counts.index)
+  bts_tech_4_sect_type.append(non_zero_counts)
 
 fig1 = make_subplots(rows=len(sector_types), cols=1, subplot_titles=sector_types)
 for i in range(len(sector_types)):
@@ -142,8 +143,8 @@ bts_total_technology_budget = total_technology_budget[bts_total_technology_budge
 bts_technology_types = np.array(technology_types)[bts_total_technology_budget_idx]
 
 fig3 = px.bar(x=bts_technology_types, y=bts_total_technology_budget, labels={'x':'Technology', 'y':'Total Funding (£)'})
-fig3.update_layout(width=1400, height=600)
-fig3.update_xaxes(tickmode='linear', tickangle=20, tickfont=dict(size=8))
+fig3.update_layout(width=1500, height=600)
+fig3.update_xaxes(tickmode='linear', tickangle=30, tickfont=dict(size=8))
 st.write(fig3)
 
 st.subheader('(Other test plot)')
