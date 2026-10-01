@@ -75,9 +75,9 @@ if "selected_sector" not in st.session_state:
   st.session_state.selected_sector = None
 for sect in sector_names:
   if st.session_state.selected_sector == sect:
-    button_text = f"Hide Table ({sect})"
-  else:
     button_text = f"Show Table ({sect})"
+  else:
+    button_text = f"Hide Table ({sect})"
   if st.button(button_text, key=f"button_{sect}"):
     if st.session_state.selected_sector == sect:
       st.session_state.selected_sector = None
