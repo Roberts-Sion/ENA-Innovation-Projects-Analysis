@@ -75,7 +75,10 @@ if "selected_sector" not in st.session_state:
   st.session_state.selected_sector = None
 for sect in sector_names:
   if st.button(f"Show Table ({sect})", key=f"button_{sect}"):
-    st.session_state.selected_sector = sect
+    if st.session_state.selected_sector == sect:
+      st.session_state.selected_sector = None
+    else:
+      st.session_state.selected_sector = sect
 if st.session_state.selected_sector is not None:
   selected_sector = st.session_state.selected_sector
   st.subheader(selected_sector)
